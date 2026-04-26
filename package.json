@@ -1,0 +1,23 @@
+{
+  "name": "com.cupkekgames.input",
+  "displayName": "CupkekGames Input",
+  "version": "0.1.0",
+  "author": {
+    "name": "CupkekGames",
+    "url": "https://www.docs.cupkek.games"
+  },
+  "unity": "6000.0",
+  "documentationUrl": "https://docs.cupkek.games/",
+  "description": "Unity Input System integration for CupkekGames packages: InputDeviceManager (active device tracking), InputEscapeManager (per-screen escape-action stack), and InputIcons (control-scheme-aware icon database). Optional via versionDefine — code only compiles if com.unity.inputsystem is installed.",
+  "keywords": [
+    "Input",
+    "Input System",
+    "Input Icons",
+    "Escape",
+    "CupkekGames"
+  ],
+  "dependencies": {
+    "com.cupkekgames.core": "0.1.0",
+    "com.unity.inputsystem": "1.16.0"
+  }
+}

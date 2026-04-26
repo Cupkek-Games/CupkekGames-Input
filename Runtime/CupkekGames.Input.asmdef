@@ -1,0 +1,23 @@
+{
+    "name": "CupkekGames.Input",
+    "rootNamespace": "",
+    "references": [
+        "GUID:38afbb2359e489e4fa79dc88f61428b5",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "",
+            "define": "UNITY_INPUT"
+        }
+    ],
+    "noEngineReferences": false
+}
