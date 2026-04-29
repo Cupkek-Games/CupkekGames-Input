@@ -1,4 +1,4 @@
-using CupkekGames.KeyValueDatabase;
+using CupkekGames.KeyValueDatabases;
 using UnityEngine;
 
 #if UNITY_INPUT
