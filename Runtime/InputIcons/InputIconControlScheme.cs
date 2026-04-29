@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
 #endif
 
-namespace CupkekGames.Core
+namespace CupkekGames.Input
 {
     public enum InputIconControlScheme
     {

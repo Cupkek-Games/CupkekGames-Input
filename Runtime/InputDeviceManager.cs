@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
-namespace CupkekGames.Core
+namespace CupkekGames.Input
 {
     public static class InputDeviceManager
     {

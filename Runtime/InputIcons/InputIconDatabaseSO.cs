@@ -1,10 +1,11 @@
+using CupkekGames.KeyValueDatabase;
 using UnityEngine;
 
 #if UNITY_INPUT
 using UnityEngine.InputSystem;
 #endif
 
-namespace CupkekGames.Core
+namespace CupkekGames.Input
 {
     [CreateAssetMenu(fileName = "InputIconDatabaseSO", menuName = "CupkekGames/Core/Input Icon Database")]
     public class InputIconDatabaseSO : ScriptableObject

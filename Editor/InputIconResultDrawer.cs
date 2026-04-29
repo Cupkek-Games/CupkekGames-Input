@@ -4,7 +4,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace CupkekGames.Core.Editor
+namespace CupkekGames.Input.Editor
 {
   [CustomPropertyDrawer(typeof(InputIconResult))]
   public class InputIconResultDrawer : PropertyDrawer

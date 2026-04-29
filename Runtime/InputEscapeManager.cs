@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace CupkekGames.Core
+namespace CupkekGames.Input
 {
   public static class InputEscapeManager
   {

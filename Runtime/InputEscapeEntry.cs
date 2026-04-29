@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 
-namespace CupkekGames.Core
+namespace CupkekGames.Input
 {
     public struct InputEscapeEntry
     {

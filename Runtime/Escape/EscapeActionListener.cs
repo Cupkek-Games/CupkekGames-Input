@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CupkekGames.Core
+namespace CupkekGames.Input
 {
   public class EscapeActionListener : MonoBehaviour
   {
