@@ -212,22 +212,6 @@ namespace CupkekGames.Input
 #endif
         }
 
-        /// <summary>
-        /// Adds a player control scheme to the current schemes list.
-        /// </summary>
-        /// <param name="controlScheme">The control scheme to add.</param>
-        /// <remarks>
-        /// This method serves as a backup for when the Unity Input System is not loaded.
-        /// It is deprecated and should not be used in new code.
-        /// </remarks>
-        [Obsolete(
-            "This method is deprecated. It only serves as a backup for when the Unity Input System is not loaded.")]
-        public static void AddPlayerControlScheme(InputIconControlScheme controlScheme)
-        {
-            _currentSchemes.Add(controlScheme);
-            OnControlSchemeChange?.Invoke(controlScheme);
-        }
-
         public static void UpdateControlScheme(InputIconControlScheme newScheme, int inputIndex,
             bool forceInvoke = false)
         {
