@@ -28,6 +28,24 @@ namespace CupkekGames.Input
 
         public static event Action<InputIconControlScheme> OnControlSchemeChange;
 
+        // With "Enter Play Mode Without Domain Reload" these statics survive
+        // between play sessions; player lists and event listeners from the
+        // previous session would leak into the next one.
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticState()
+        {
+#if UNITY_INPUT
+            InputSystem.onActionChange -= OnActionChange;
+            _playerInputs = new List<PlayerInput>();
+            _escapeActionNames = new List<string>() { "UI/Cancel" };
+            _loadingActionMaps = null;
+            OnPlayerAdded = null;
+            OnPlayerRemoved = null;
+#endif
+            _currentSchemes = new List<InputIconControlScheme>();
+            OnControlSchemeChange = null;
+        }
+
 #if UNITY_INPUT
         public static void OnEnable(List<string> escapeActionNames, List<string> loadingActionMaps,
             bool localMultiplayer)

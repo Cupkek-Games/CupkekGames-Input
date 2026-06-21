@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 namespace CupkekGames.Input
 {
@@ -14,6 +15,17 @@ namespace CupkekGames.Input
     static InputEscapeManager()
     {
       InputEscapeEvent += OnEscape;
+    }
+
+    // With "Enter Play Mode Without Domain Reload" these statics survive
+    // between play sessions; the previous session's escape stack and
+    // listeners would leak into the next one.
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStaticState()
+    {
+      _escapeList.Clear();
+      _isBlocked = false;
+      InputEscapeEvent = OnEscape; // drop stale listeners, keep the built-in pop handler
     }
 
     public static void OnEscape()
