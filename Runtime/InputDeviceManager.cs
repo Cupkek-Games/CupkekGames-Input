@@ -20,6 +20,12 @@ namespace CupkekGames.Input
         private static List<string> _loadingActionMaps;
         public static List<string> LoadingActionMaps => _loadingActionMaps;
 
+        // Single source of truth for "the action that dismisses a loading screen".
+        // Must live in one of _loadingActionMaps (the only maps enabled during loading),
+        // so a press-to-continue gate can never wait on a disabled action.
+        private static string _loadingContinueActionName;
+        public static string LoadingContinueActionName => _loadingContinueActionName;
+
         public static event Action<PlayerInput, int> OnPlayerAdded;
         public static event Action<PlayerInput, int> OnPlayerRemoved;
 #endif
@@ -39,6 +45,7 @@ namespace CupkekGames.Input
             _playerInputs = new List<PlayerInput>();
             _escapeActionNames = new List<string>() { "UI/Cancel" };
             _loadingActionMaps = null;
+            _loadingContinueActionName = null;
             OnPlayerAdded = null;
             OnPlayerRemoved = null;
 #endif
@@ -48,12 +55,13 @@ namespace CupkekGames.Input
 
 #if UNITY_INPUT
         public static void OnEnable(List<string> escapeActionNames, List<string> loadingActionMaps,
-            bool localMultiplayer)
+            bool localMultiplayer, string loadingContinueActionName = "Loading/Submit")
         {
             _playerInputs = new List<PlayerInput>();
             _currentSchemes = new List<InputIconControlScheme>();
             _escapeActionNames = escapeActionNames;
             _loadingActionMaps = loadingActionMaps;
+            _loadingContinueActionName = loadingContinueActionName;
 
             if (!localMultiplayer)
             {
@@ -229,6 +237,33 @@ namespace CupkekGames.Input
             }
 #endif
         }
+
+#if UNITY_INPUT
+        /// <summary>
+        /// The continue actions for every active <see cref="PlayerInput"/>, resolved from
+        /// <see cref="LoadingContinueActionName"/>. Because that name points into a loading
+        /// action map (the only maps enabled during loading), the returned actions are
+        /// guaranteed live — a press-to-continue gate can wait on them safely. Falls back to
+        /// the project-wide <see cref="InputSystem.actions"/> when no PlayerInputs are registered.
+        /// </summary>
+        public static IEnumerable<InputAction> GetLoadingContinueActions()
+        {
+            if (string.IsNullOrEmpty(_loadingContinueActionName)) yield break;
+
+            if (_playerInputs.Count == 0)
+            {
+                var shared = InputSystem.actions?.FindAction(_loadingContinueActionName);
+                if (shared != null) yield return shared;
+                yield break;
+            }
+
+            foreach (var playerInput in _playerInputs)
+            {
+                var action = playerInput.actions?.FindAction(_loadingContinueActionName);
+                if (action != null) yield return action;
+            }
+        }
+#endif
 
         public static void UpdateControlScheme(InputIconControlScheme newScheme, int inputIndex,
             bool forceInvoke = false)
