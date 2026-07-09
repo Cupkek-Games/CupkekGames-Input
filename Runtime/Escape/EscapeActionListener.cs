@@ -5,7 +5,7 @@ namespace CupkekGames.Input
 {
   public class EscapeActionListener : MonoBehaviour
   {
-    public Guid EscapeKey;
+    [NonSerialized] public Guid EscapeKey;
 
     protected virtual void OnDisable()
     {
