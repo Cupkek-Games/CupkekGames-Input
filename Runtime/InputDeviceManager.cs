@@ -153,6 +153,10 @@ namespace CupkekGames.Input
 
         public static void UpdateControlScheme(int inputIndex, bool forceInvoke = false)
         {
+            // onActionChange can fire during OnEnable's action-map binding resolution,
+            // before the first AddPlayerInput call — there is no scheme to update yet.
+            if (inputIndex < 0 || inputIndex >= _playerInputs.Count) return;
+
             PlayerInput playerInput = _playerInputs[inputIndex];
             InputIconControlScheme newScheme =
                 InputIconControlSchemeExtensions.FromString(playerInput.currentControlScheme);
