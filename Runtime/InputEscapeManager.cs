@@ -1,15 +1,21 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Unity.Scripting.LifecycleManagement;
 
 namespace CupkekGames.Input
 {
-  public static class InputEscapeManager
+  public static partial class InputEscapeManager
   {
-    // State
-    private static List<InputEscapeEntry> _escapeList = new();
+    // State. Owned by ResetStaticState below rather than [AutoStaticsCleanup]: the
+    // generated cleanup restores a field's initializer, which for InputEscapeEvent is
+    // null — that would drop the built-in pop handler instead of re-installing it.
+    [NoAutoStaticsCleanup]
+    private static readonly List<InputEscapeEntry> _escapeList = new();
+    [NoAutoStaticsCleanup]
     private static bool _isBlocked = false;
     // Events
+    [NoAutoStaticsCleanup]
     public static Action InputEscapeEvent;
 
     static InputEscapeManager()
@@ -20,7 +26,10 @@ namespace CupkekGames.Input
     // With "Enter Play Mode Without Domain Reload" these statics survive
     // between play sessions; the previous session's escape stack and
     // listeners would leak into the next one.
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    [NoAutoStaticsCleanup]
+    private static readonly DelegateAutoCleanup _autoCleanup =
+      DelegateAutoCleanup.CreateForPlayMode(ResetStaticState, "CupkekGames.Input.InputEscapeManager");
+
     private static void ResetStaticState()
     {
       _escapeList.Clear();

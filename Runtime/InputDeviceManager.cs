@@ -4,54 +4,55 @@ using System.Collections.Generic;
 #if UNITY_INPUT
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Scripting.LifecycleManagement;
 #endif
 
 namespace CupkekGames.Input
 {
-    public static class InputDeviceManager
+    public static partial class InputDeviceManager
     {
 #if UNITY_INPUT
+        [AutoStaticsCleanup]
         private static List<PlayerInput> _playerInputs = new List<PlayerInput>();
         public static List<PlayerInput> PlayerInputs => _playerInputs;
 
+        [AutoStaticsCleanup]
         private static List<string> _escapeActionNames = new List<string>() { "UI/Cancel" };
         public static List<string> EscapeActionNames => _escapeActionNames;
 
+        [AutoStaticsCleanup]
         private static List<string> _loadingActionMaps;
         public static List<string> LoadingActionMaps => _loadingActionMaps;
 
         // Single source of truth for "the action that dismisses a loading screen".
         // Must live in one of _loadingActionMaps (the only maps enabled during loading),
         // so a press-to-continue gate can never wait on a disabled action.
+        [AutoStaticsCleanup]
         private static string _loadingContinueActionName;
         public static string LoadingContinueActionName => _loadingContinueActionName;
 
+        [AutoStaticsCleanup]
         public static event Action<PlayerInput, int> OnPlayerAdded;
+        [AutoStaticsCleanup]
         public static event Action<PlayerInput, int> OnPlayerRemoved;
 #endif
+        [AutoStaticsCleanup]
         private static List<InputIconControlScheme> _currentSchemes = new List<InputIconControlScheme>();
         public static List<InputIconControlScheme> CurrentSchemes => _currentSchemes;
 
+        [AutoStaticsCleanup]
         public static event Action<InputIconControlScheme> OnControlSchemeChange;
 
-        // With "Enter Play Mode Without Domain Reload" these statics survive
-        // between play sessions; player lists and event listeners from the
-        // previous session would leak into the next one.
-        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStaticState()
-        {
 #if UNITY_INPUT
-            InputSystem.onActionChange -= OnActionChange;
-            _playerInputs = new List<PlayerInput>();
-            _escapeActionNames = new List<string>() { "UI/Cancel" };
-            _loadingActionMaps = null;
-            _loadingContinueActionName = null;
-            OnPlayerAdded = null;
-            OnPlayerRemoved = null;
+        // Every field reset this used to do is now the generated cleanup's job — it restores
+        // each field's initializer, which is exactly what the old body wrote. The one thing it
+        // cannot express is detaching from an event we do not own, so that is all this does.
+        [NoAutoStaticsCleanup]
+        private static readonly DelegateAutoCleanup _autoCleanup =
+            DelegateAutoCleanup.CreateForPlayMode(DetachActionChange, "CupkekGames.Input.InputDeviceManager");
+
+        private static void DetachActionChange() => InputSystem.onActionChange -= OnActionChange;
 #endif
-            _currentSchemes = new List<InputIconControlScheme>();
-            OnControlSchemeChange = null;
-        }
 
 #if UNITY_INPUT
         public static void OnEnable(List<string> escapeActionNames, List<string> loadingActionMaps,
