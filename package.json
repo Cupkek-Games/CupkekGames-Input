@@ -1,7 +1,7 @@
 {
   "name": "com.cupkekgames.input",
   "displayName": "CupkekGames Input",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": {
     "name": "CupkekGames",
     "url": "https://www.docs.cupkek.games"
@@ -17,7 +17,7 @@
     "CupkekGames"
   ],
   "dependencies": {
-    "com.cupkekgames.keyvaluedatabases": "0.2.0",
+    "com.cupkekgames.keyvaluedatabases": "0.3.0",
     "com.unity.inputsystem": "1.16.0"
   }
 }
