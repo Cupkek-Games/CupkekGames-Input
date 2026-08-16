@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace CupkekGames.Input
 {
-    [CreateAssetMenu(fileName = "InputIconDatabaseSO", menuName = "CupkekGames/Core/Input Icon Database")]
+    [CreateAssetMenu(fileName = "InputIconDatabaseSO", menuName = "CupkekGames/Input/Input Icon Database")]
     public class InputIconDatabaseSO : ScriptableObject
     {
         [Header("Keyboard & Mouse")]
