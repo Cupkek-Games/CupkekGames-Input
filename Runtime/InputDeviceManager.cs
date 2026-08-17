@@ -168,6 +168,8 @@ namespace CupkekGames.Input
 
         public static void ActionMapEnableOthers(InputActionAsset inputActionAsset, List<string> actionMapsToEnable)
         {
+            if (inputActionAsset == null) return;
+
             // Disable all action maps first
             foreach (var actionMap in inputActionAsset.actionMaps)
             {
@@ -191,6 +193,9 @@ namespace CupkekGames.Input
 
         public static void SetEnabledActionMaps(InputActionAsset asset, ICollection<string> mapsToEnable)
         {
+            // No project-wide actions asset (or a PlayerInput without one) is a legitimate state.
+            if (asset == null) return;
+
             foreach (var map in asset.actionMaps)
             {
                 if (mapsToEnable.Contains(map.name))
@@ -206,6 +211,8 @@ namespace CupkekGames.Input
 
         public static void SetDisabledActionMaps(InputActionAsset asset, ICollection<string> mapsToDisable)
         {
+            if (asset == null) return;
+
             foreach (var map in asset.actionMaps)
             {
                 if (mapsToDisable.Contains(map.name))
