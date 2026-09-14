@@ -19,16 +19,30 @@ namespace CupkekGames.Input
         [Header("PlayStation 5")]
         [SerializeField] private KeyValueDatabase<string, InputIconResult> _playStation5;
 #if UNITY_INPUT
-        public InputIconResultExtra GetInputPromptFromName(PlayerInput playerInput, string actionName)
+        public InputIconResultExtra GetInputPromptFromName(PlayerInput playerInput, string actionName, string preferredDevice = null)
         {
-            return GetInputPrompt(playerInput, playerInput.actions[actionName]);
+            return GetInputPrompt(playerInput, playerInput.actions[actionName], false, preferredDevice);
         }
-        public InputIconResultExtra GetInputPrompt(PlayerInput playerInput, InputAction action, bool textOnly = false)
+        /// <summary>
+        /// The binding a prompt shows for <paramref name="action"/>: the first binding of the
+        /// player's current control scheme, or, when <paramref name="preferredDevice"/> names a
+        /// device layout (for example "Mouse"), the first such binding on that device, falling
+        /// back to the scheme's first binding when the device has none.
+        /// </summary>
+        public InputIconResultExtra GetInputPrompt(PlayerInput playerInput, InputAction action, bool textOnly = false, string preferredDevice = null)
         {
             InputIconResultExtra result = new InputIconResultExtra();
 
             string controlScheme = playerInput.currentControlScheme;
             result.BindingIndex = action.GetBindingIndex(group: controlScheme);
+            if (!string.IsNullOrEmpty(preferredDevice))
+            {
+                int preferred = FindBindingOnDevice(action, controlScheme, preferredDevice);
+                if (preferred != -1)
+                {
+                    result.BindingIndex = preferred;
+                }
+            }
             if (result.BindingIndex == -1)
             {
                 Debug.LogWarning("bindingIndex == -1: " + action.name + " - " + controlScheme);
@@ -67,6 +81,31 @@ namespace CupkekGames.Input
             return result;
         }
 #endif
+
+        private static int FindBindingOnDevice(InputAction action, string controlScheme, string deviceLayout)
+        {
+            for (int i = 0; i < action.bindings.Count; i++)
+            {
+                InputBinding binding = action.bindings[i];
+                if (binding.isComposite || !BindingInScheme(binding, controlScheme)) continue;
+                string layout = InputControlPath.TryGetDeviceLayout(binding.effectivePath);
+                if (layout != null && string.Equals(layout, deviceLayout, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private static bool BindingInScheme(InputBinding binding, string controlScheme)
+        {
+            if (string.IsNullOrEmpty(binding.groups)) return false;
+            foreach (string group in binding.groups.Split(InputBinding.Separator))
+            {
+                if (group == controlScheme) return true;
+            }
+            return false;
+        }
 
         public KeyValueDatabase<string, InputIconResult> GetDatabase(InputIconControlScheme controlScheme)
         {
